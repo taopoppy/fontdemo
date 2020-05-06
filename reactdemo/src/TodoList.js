@@ -16,6 +16,7 @@ class TodoList extends Component {
 	handleInputChange(e) {
 		// 3. 新版函数的ES6简写
 		const value = e.target.value
+		// const value = this.input.value
 		this.setState(() => ({
 			inputValue: value
 		}))
@@ -81,6 +82,7 @@ class TodoList extends Component {
 						id="insertArea"
 						value={this.state.inputValue}
 						onChange={this.handleInputChange}
+						ref={(input) => {this.input = input}}
 					/>
 					<button onClick={this.handleButtonClick}>提交</button>
 				</div>
