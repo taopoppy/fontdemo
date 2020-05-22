@@ -8,6 +8,13 @@ class TodoItem extends React.Component {
 		// 提前将handleClick函数的this绑定在TodoItem
 		this.handleClick = this.handleClick.bind(this)
 	}
+	shouldComponentUpdate(nextProps,nextState) {
+		if(nextProps.content !== this.props.content) {
+			return true
+		} else {
+			return false
+		}
+	}
 	handleClick() {
 		// 调用父组件传递来的方法
 		// deleteItem就是TodoItem中的handleItemDelete方法
@@ -16,10 +23,10 @@ class TodoItem extends React.Component {
 		deleteItem(index)
 	}
 	render() {
-		const { content,test } = this.props
+		const { content } = this.props
 		return (
 			<div onClick={this.handleClick}>
-				{ test} - { content }
+				{ content }
 			</div>
 		)
 	}
@@ -27,14 +34,9 @@ class TodoItem extends React.Component {
 
 // TodoItem这个组件做属性校验
 TodoItem.propTypes = {
-	test: PropTypes.string.isRequired,
-	content: PropTypes.oneOfType(PropTypes.string, PropTypes.number),
+	content: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	deleteItem: PropTypes.func,
 	index: PropTypes.number
-}
-
-TodoItem.defaultProps = {
-	test: 'hello world'
 }
 
 export default TodoItem

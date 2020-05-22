@@ -1,6 +1,7 @@
 // TodoList.js
 import React, {Component, Fragment} from 'react';
 import TodoItem from './TodoItem'
+import axios from 'axios'
 
 class TodoList extends Component {
 	constructor(props) {
@@ -14,36 +15,16 @@ class TodoList extends Component {
 		this.handleItemDelete = this.handleItemDelete.bind(this)
 	}
 	handleInputChange(e) {
-		// 3. 新版函数的ES6简写
 		const value = e.target.value
-		// const value = this.input.value
 		this.setState(() => ({
 			inputValue: value
 		}))
-
-		// // 2. 新版函数的写法
-		// this.setState(()=> {
-		// 	return {
-		// 		inputValue: e.target.value
-		// 	}
-		// })
-
-		// // 1.最古老的写法
-		// this.setState({
-		// 	inputValue: e.target.value
-		// })
 	}
 	handleButtonClick() {
 		this.setState((prevState)=> ({
 			list: [...prevState.list,prevState.inputValue],
 			inputValue: ''
 		}))
-
-		// // 1. 最古老的写法
-		// this.setState({
-		// 	list: [...this.state.list, this.state.inputValue],
-		// 	inputValue: ''
-		// })
 	}
 	handleItemDelete(index) {
 		this.setState((prevState)=> {
@@ -53,13 +34,6 @@ class TodoList extends Component {
 				list
 			}
 		})
-
-		// // 1.最古老的写法
-		// const list = [...this.state.list]
-		// list.splice(index, 1)
-		// this.setState({
-		// 	list
-		// })
 	}
 	getTodoItem() {
 		return this.state.list.map((item, index) => {
@@ -73,6 +47,17 @@ class TodoList extends Component {
 			)
 		})
 	}
+
+	componentDidMount() {
+		axios.get('/api/todolist')
+		.then((res)=> {
+			this.setState(()=> ({
+				list: [...res.data]
+			}))
+		})
+		.catch(()=> {alert('error')})
+	}
+
 	render() {
 		return (
 			<Fragment>
@@ -82,7 +67,6 @@ class TodoList extends Component {
 						id="insertArea"
 						value={this.state.inputValue}
 						onChange={this.handleInputChange}
-						ref={(input) => {this.input = input}}
 					/>
 					<button onClick={this.handleButtonClick}>提交</button>
 				</div>
