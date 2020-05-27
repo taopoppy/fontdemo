@@ -1,8 +1,0 @@
-.show {
-	animation: animate__animated animate__bounce 1s ease-in forwards;
-}
-
-.hide {
-	opacity: 0; /*透明度变为0*/
-	transition: all 1s ease-in;/*变为透明度为0的过程为1秒的动画*/
-}

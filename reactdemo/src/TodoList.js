@@ -1,81 +1,73 @@
-// TodoList.js
-import React, {Component, Fragment} from 'react';
-import TodoItem from './TodoItem'
-import axios from 'axios'
+import React, { Component } from 'react'
+import 'antd/dist/antd.css';
+import { Input, Button, List } from 'antd';
+import store from './store/index.js'
 
 class TodoList extends Component {
 	constructor(props) {
-		super(props);
-		this.state = {
-			inputValue: '',
-			list: []
-		}
+		super(props)
+		this.state = store.getState()
 		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleButtonClick = this.handleButtonClick.bind(this)
-		this.handleItemDelete = this.handleItemDelete.bind(this)
-	}
-	handleInputChange(e) {
-		const value = e.target.value
-		this.setState(() => ({
-			inputValue: value
-		}))
-	}
-	handleButtonClick() {
-		this.setState((prevState)=> ({
-			list: [...prevState.list,prevState.inputValue],
-			inputValue: ''
-		}))
-	}
-	handleItemDelete(index) {
-		this.setState((prevState)=> {
-			const list = [...prevState.list]
-			list.splice(index, 1)
-			return {
-				list
-			}
-		})
-	}
-	getTodoItem() {
-		return this.state.list.map((item, index) => {
-			return (
-				<TodoItem
-					content={item} // 传递属性
-					key={index}
-					index={index}
-					deleteItem={this.handleItemDelete} // 传递方法
-				/>
-			)
-		})
+		this.handleStoreChange = this.handleStoreChange.bind(this)
+		this.handleBtnClick = this.handleBtnClick.bind(this)
+		// 5. 订阅到Store的变化
+		store.subscribe(this.handleStoreChange)
 	}
 
-	componentDidMount() {
-		axios.get('/api/todolist')
-		.then((res)=> {
-			this.setState(()=> ({
-				list: [...res.data]
-			}))
-		})
-		.catch(()=> {alert('error')})
-	}
-
-	render() {
+	render(){
 		return (
-			<Fragment>
+			<div style={{marginTop:'10px',marginLeft:'10px'}}>
 				<div>
-					<label htmlFor="insertArea"></label>
-					<input
-						id="insertArea"
+					<Input
 						value={this.state.inputValue}
+						placeholder="todo info"
+						style={{width: '300px',marginRight:'10px'}}
 						onChange={this.handleInputChange}
 					/>
-					<button onClick={this.handleButtonClick}>提交</button>
+					<Button
+						type="primary"
+						onClick={this.handleBtnClick} // 1. 点击提交按钮
+					>Commit</Button>
 				</div>
-				<ul>
-					{this.getTodoItem()}
-				</ul>
-			</Fragment>
+				<List
+					style={{marginTop:'10px',width: '300px'}}
+					bordered
+					dataSource={this.state.list}
+					renderItem={(item,index) => (<List.Item onClick={this.hanleItemDelete.bind(this,index)}>{item}</List.Item>)}
+				/>
+			</div>
 		)
+	}
+
+	handleInputChange(e) {
+		const action = {
+			type: 'change_input_value',
+			value: e.target.value
+		}
+		store.dispatch(action)
+	}
+
+	handleStoreChange() {
+		// 6. 重新取一遍数据
+		this.setState(store.getState())
+	}
+
+	handleBtnClick() {
+		const action = {
+			type: 'add_todo_item'
+		}
+		store.dispatch(action)
+	}
+
+	hanleItemDelete(index){
+		// 2. 创建action
+		const action = {
+			type: 'delete_todo_item',
+			index
+		}
+		// 3. dispatch调度一个action
+		store.dispatch(action)
 	}
 }
 
-export default TodoList
+export default TodoList;
