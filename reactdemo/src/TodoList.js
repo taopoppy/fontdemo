@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import 'antd/dist/antd.css';
-import { Input, Button, List } from 'antd';
 import store from './store/index.js'
+import {
+	getInputChangeAction,
+	getAddItemAction,
+	getDeleteItemAction,
+	getTodoList
+} from './store/actionCreators'
+import TodoListUI from './TodoListUI'
 
 class TodoList extends Component {
 	constructor(props) {
@@ -10,40 +16,29 @@ class TodoList extends Component {
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleStoreChange = this.handleStoreChange.bind(this)
 		this.handleBtnClick = this.handleBtnClick.bind(this)
+		this.hanleItemDelete = this.hanleItemDelete.bind(this)
 		// 5. 订阅到Store的变化
 		store.subscribe(this.handleStoreChange)
+	}
+	componentDidMount() {
+		const action = getTodoList()
+		store.dispatch(action)
 	}
 
 	render(){
 		return (
-			<div style={{marginTop:'10px',marginLeft:'10px'}}>
-				<div>
-					<Input
-						value={this.state.inputValue}
-						placeholder="todo info"
-						style={{width: '300px',marginRight:'10px'}}
-						onChange={this.handleInputChange}
-					/>
-					<Button
-						type="primary"
-						onClick={this.handleBtnClick} // 1. 点击提交按钮
-					>Commit</Button>
-				</div>
-				<List
-					style={{marginTop:'10px',width: '300px'}}
-					bordered
-					dataSource={this.state.list}
-					renderItem={(item,index) => (<List.Item onClick={this.hanleItemDelete.bind(this,index)}>{item}</List.Item>)}
-				/>
-			</div>
+			<TodoListUI
+				inputValue={this.state.inputValue}
+				list={this.state.list}
+				handleInputChange={this.handleInputChange}
+				handleBtnClick={this.handleBtnClick}
+				hanleItemDelete={this.hanleItemDelete}
+			/>
 		)
 	}
 
 	handleInputChange(e) {
-		const action = {
-			type: 'change_input_value',
-			value: e.target.value
-		}
+		const action = getInputChangeAction(e.target.value)
 		store.dispatch(action)
 	}
 
@@ -53,18 +48,13 @@ class TodoList extends Component {
 	}
 
 	handleBtnClick() {
-		const action = {
-			type: 'add_todo_item'
-		}
+		const action = getAddItemAction()
 		store.dispatch(action)
 	}
 
 	hanleItemDelete(index){
 		// 2. 创建action
-		const action = {
-			type: 'delete_todo_item',
-			index
-		}
+		const action = getDeleteItemAction(index)
 		// 3. dispatch调度一个action
 		store.dispatch(action)
 	}
