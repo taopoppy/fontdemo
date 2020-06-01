@@ -1,63 +1,65 @@
-import React, { Component } from 'react'
-import 'antd/dist/antd.css';
-import store from './store/index.js'
+import React from 'react'
+import { connect } from 'react-redux'
 import {
 	getInputChangeAction,
 	getAddItemAction,
 	getDeleteItemAction,
 	getInitList
 } from './store/actionCreators'
-import TodoListUI from './TodoListUI'
+import store from './store/index.js'
 
-class TodoList extends Component {
-	constructor(props) {
-		super(props)
-		this.state = store.getState()
-		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleStoreChange = this.handleStoreChange.bind(this)
-		this.handleBtnClick = this.handleBtnClick.bind(this)
-		this.hanleItemDelete = this.hanleItemDelete.bind(this)
-		// 5. 订阅到Store的变化
-		store.subscribe(this.handleStoreChange)
-	}
-	componentDidMount() {
-		const action = getInitList()
-		store.dispatch(action)
-	}
+const action = getInitList()
+store.dispatch(action)
 
-	render(){
-		return (
-			<TodoListUI
-				inputValue={this.state.inputValue}
-				list={this.state.list}
-				handleInputChange={this.handleInputChange}
-				handleBtnClick={this.handleBtnClick}
-				hanleItemDelete={this.hanleItemDelete}
-			/>
+const TodoList = (props) => {
+		const { inputValue, changeInputValue, handleClick, list,handleDeleteItem} = props
+		return(
+			<div>
+				<div>
+					<input
+						value={inputValue}
+						onChange={changeInputValue}
+					/>
+					<button
+						onClick={handleClick}
+					>commit</button>
+				</div>
+				<ul>
+					{
+						list.map((item,index) => {
+							return <li key={index} onClick={()=>{ handleDeleteItem(index) }} >{item}</li>
+						})
+					}
+				</ul>
+			</div>
 		)
-	}
+}
 
-	handleInputChange(e) {
-		const action = getInputChangeAction(e.target.value)
-		store.dispatch(action)
-	}
-
-	handleStoreChange() {
-		// 6. 重新取一遍数据
-		this.setState(store.getState())
-	}
-
-	handleBtnClick() {
-		const action = getAddItemAction()
-		store.dispatch(action)
-	}
-
-	hanleItemDelete(index){
-		// 2. 创建action
-		const action = getDeleteItemAction(index)
-		// 3. dispatch调度一个action
-		store.dispatch(action)
+const mapStateToProps = (state /**参数为redux中的数据 */) => {
+	return {
+		inputValue:state.inputValue,
+		list:state.list
 	}
 }
 
-export default TodoList;
+const mapDispatchToProps = (dispatch) => {
+	return {
+		// 输入框输入处理
+		changeInputValue(e) {
+			const action = getInputChangeAction(e.target.value)
+			dispatch(action)
+		},
+		// 提交按钮点击处理
+		handleClick() {
+			const action = getAddItemAction()
+			dispatch(action)
+		},
+		// 点击item删除
+		handleDeleteItem(index) {
+			const action = getDeleteItemAction(index)
+			dispatch(action)
+		}
+	}
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(TodoList)

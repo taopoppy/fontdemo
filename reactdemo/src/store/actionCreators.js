@@ -3,8 +3,8 @@ import {
 	ADD_TODO_ITEM,
 	DELETE_TODO_ITEM,
 	INIT_LIST_ACTION,
-	GET_INIT_LIST
 } from './actionTypes'
+import axios from 'axios'
 
 export const getInputChangeAction = (value) => ({
 	type: CHANGE_INPUT_VALUE,
@@ -25,7 +25,13 @@ export const initListAction = (data) => ({
 	data
 })
 
-export const getInitList = () => ({
-	type: GET_INIT_LIST
-})
-
+export const getInitList = () => {
+	// 返回的action是个函数
+	return async (dispatch)=>{
+		const res = await axios.get('http://localhost:4000/list?media=blog&media=wechat&media=taopoppy')
+		const data = res.data
+		// 异步请求完毕后再次dispatch一个action对象
+		const action = initListAction(data)
+		dispatch(action)
+	}
+}

@@ -6,27 +6,23 @@ import {
 } from './actionTypes'
 
 const defaultState = {
-	inputValue: 'start input',
+	inputValue: '',
 	list: []
 }
 
-// 4. reducer中根据action的type类型进行不同的处理，返回newState
-export default (state = defaultState,action)=> {
-	if (action.type === CHANGE_INPUT_VALUE) {
-		// reducer可以接收state，但是不能修改state，所以创建newState对state进行简单的深拷贝
+export default (state=defaultState,action) => {
+	if(action.type === CHANGE_INPUT_VALUE) {
 		const newState = JSON.parse(JSON.stringify(state))
-		// 根据action的type和value精准修改store中的值
 		newState.inputValue = action.value
-		// 返回新数据给Store
 		return newState
 	}
-	if (action.type === ADD_TODO_ITEM) {
+	if(action.type === ADD_TODO_ITEM ) {
 		const newState = JSON.parse(JSON.stringify(state))
 		newState.list.push(newState.inputValue)
 		newState.inputValue = ''
 		return newState
 	}
-	if (action.type === DELETE_TODO_ITEM) {
+	if(action.type === DELETE_TODO_ITEM){
 		const newState = JSON.parse(JSON.stringify(state))
 		newState.list.splice(action.index,1)
 		return newState

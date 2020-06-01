@@ -1,24 +1,18 @@
-import { createStore,compose, applyMiddleware } from 'redux'
+// store/index.js
+import { createStore,applyMiddleware,compose } from 'redux'
 import reducer from './reducer'
-import createSagaMiddleware from 'redux-saga'
-import sagas from './sagas'
-
-const sagaMiddleware = createSagaMiddleware()
+import thunk from 'redux-thunk';
 
 const composeEnhancers =
   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
 
 const enhancer = composeEnhancers(
-	applyMiddleware(sagaMiddleware)
+  applyMiddleware(thunk),
 );
 
-
-// 创建一个公共管理仓库store，参数为reducer
 const store = createStore(
 	reducer,
 	enhancer
 )
-
-sagaMiddleware.run(sagas)
 
 export default store
