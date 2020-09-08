@@ -1,4 +1,38 @@
-import { ADD_TODO,TOGGLE_TODO } from '../actions/actionTypes'
+import { ADD_TODO,TOGGLE_TODO,FETTH_TODOS_FAILURE,FETTH_TODOS_SUCCESS,FETTH_TODOS_REQUEST } from '../actions/actionTypes'
+
+
+const initialState = {
+	isFetching: false,
+	error: null,
+	data: []
+}
+
+const reducer = (state = initialState, action) => {
+	switch (action.type) {
+		case FETTH_TODOS_REQUEST:
+			return {
+				...state,
+				isFetching:true
+			}
+		case FETTH_TODOS_SUCCESS:
+			return {
+				...state,
+				isFetching: false,
+				data: action.data
+			}
+		case FETTH_TODOS_FAILURE:
+			return {
+				...state,
+				isFetching: false,
+				error: action.error,
+			}
+		default:
+			return {
+				...state,
+				data: todos(state.data, action)
+			}
+	}
+}
 
 // 这里todos这个state的初始值应该是[]
 const todos = (state = [], action) => {
@@ -20,4 +54,4 @@ const todos = (state = [], action) => {
 	}
 }
 
-export default todos
+export default reducer

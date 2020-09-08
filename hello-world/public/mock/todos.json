@@ -1,0 +1,12 @@
+[
+	{
+		"id": 100,
+		"text": "学习React",
+		"completed": false
+	},
+	{
+		"id": 101,
+		"text": "学习Redux",
+		"completed": false
+	}
+]

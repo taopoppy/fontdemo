@@ -1,4 +1,4 @@
-import { connect } from 'redux'
+import { connect } from 'react-redux'
 import AddTodo from '../components/AddTodo'
 import { addTodo, setTodoText } from '../actions'
 

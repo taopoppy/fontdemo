@@ -1,23 +1,17 @@
-import { createStore } from 'redux'
+import { createStore,applyMiddleware,compose } from 'redux'
 import rootReducer from './reducers/index'
-import { addTodo, toggleTodo, setFilter, setTodoText} from './actions/index'
-const store = createStore(rootReducer)
+import thunkMiddleware from 'redux-thunk'
 
-// 初始State
-console.log(store.getState())
 
-// 订阅state的变化
-const unsubscribe = store.subscribe(() => {
-	console.log(store.getState())
-})
 
-// 发生action
-store.dispatch(addTodo('learn about redux'))
-store.dispatch(toggleTodo(0))
-store.dispatch(setFilter('active'))
-store.dispatch(setTodoText('learn'))
+const composeEnhancers =
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) : compose;
 
-// 取消订阅
-unsubscribe()
+const enhancer = composeEnhancers(
+  applyMiddleware(thunkMiddleware),
+);
+
+const store = createStore(rootReducer,enhancer)
+
 
 export default store

@@ -2,9 +2,45 @@ import {
 	ADD_TODO,
 	TOGGLE_TODO,
 	SET_FILTER,
-	SET_TODO_TEXT
+	SET_TODO_TEXT,
+	FETTH_TODOS_REQUEST,
+	FETTH_TODOS_SUCCESS,
+	FETTH_TODOS_FAILURE
 } from './actionTypes'
 let nextTodoId = 0
+
+
+const fetchTodosRequest = () => ({
+	type: FETTH_TODOS_REQUEST
+})
+
+const fetchTodosSuccess = (data) => ({
+	type: FETTH_TODOS_SUCCESS,
+	data
+})
+
+const fetchTodosFailure = (error) => ({
+	type: FETTH_TODOS_FAILURE,
+	error
+})
+
+// 请求数据的异步Action
+export const fetchTodos = () => {
+	return (dispatch) => {
+		dispatch(fetchTodosRequest())
+		return fetch("./mock/todos.json").then(
+			response => {
+				response.json().then(data => {
+					dispatch(fetchTodosSuccess(data))
+				})
+			},
+			error => {
+				dispatch(fetchTodosFailure(error))
+				console.log("An error occurred" + error)
+			}
+		)
+	}
+}
 
 
 /**
