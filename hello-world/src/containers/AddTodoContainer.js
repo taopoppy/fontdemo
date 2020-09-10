@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import AddTodo from '../components/AddTodo'
 import { addTodo, setTodoText } from '../actions'
+import { getText } from '../selectors/index'
 
 // AddTodo组件中可以拿到this.props.text
 const mapStateToProps = (state) => ({
-	text: state.text
+	text: getText(state)
 })
 // AddTodo组件中可以拿到this.props.addTodo
 // AddTodo组件中可以拿到this.props.setTodoText
