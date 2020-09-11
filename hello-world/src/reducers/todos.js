@@ -1,6 +1,5 @@
 import { ADD_TODO,TOGGLE_TODO,FETTH_TODOS_FAILURE,FETTH_TODOS_SUCCESS,FETTH_TODOS_REQUEST } from '../actions/actionTypes'
 
-
 const initialState = {
 	isFetching: false,
 	error: null,
@@ -24,7 +23,7 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				isFetching: false,
-				error: action.error,
+				error: action.error
 			}
 		default:
 			return {
@@ -34,7 +33,6 @@ const reducer = (state = initialState, action) => {
 	}
 }
 
-// 这里todos这个state的初始值应该是[]
 const todos = (state = [], action) => {
 	switch(action.type) {
 		case ADD_TODO:

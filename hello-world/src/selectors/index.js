@@ -1,16 +1,21 @@
+import { createSelector } from 'reselect'
+
 export const getText = (state) => state.text
 export const getFilter = (state) => state.filter
+export const getTodos = (state) => state.todos.data
 
-export const getVisibleTodos = ( state ) => {
-	const { filter, todos: { data } } = state
-	switch (filter) {
-		case "all":
-			return data
-		case "completed":
-			return data.filter(t => t.completed)
-		case "active":
-			return data.filter(t => !t.completed)
-		default:
-			return new Error("Unknown filter", filter)
+export const getVisibleTodos = createSelector(
+	[getTodos, getFilter],
+	(todos, filter) => {
+		switch (filter) {
+			case "all":
+				return todos
+			case "completed":
+				return todos.filter(t => t.completed)
+			case "active":
+				return todos.filter(t => !t.completed)
+			default:
+				return new Error("Unknown filter", filter)
+		}
 	}
-}
+)
