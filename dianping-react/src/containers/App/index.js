@@ -2,14 +2,22 @@ import React from 'react';
 import ErrorToast from '../../components/ErrorToast/index'
 import { connect } from 'react-redux'
 import { actions as appActions ,getError } from '../../redux/modules/app'
-import './style.css';
 import { bindActionCreators } from 'redux';
+import Home from '../Home/index'
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 class App extends React.Component {
 	render() {
 		const { error, appActions: { clearError }} = this.props
 		return (
 			<div className="App">
+				<Router>
+					<Switch>
+						<Route path="/" component={Home} />
+					</Switch>
+				</Router>
+				<Home />
 				{  error ? <ErrorToast msg={error} clearError={clearError}/> : null}
 			</div>
 		);
